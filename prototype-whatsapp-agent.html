@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp AI Agent — Demo by Dev Jariwala</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #1A3A2A;
+  --forest-mid: #2D5A40;
+  --forest-light: #3D7A55;
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-pale: #FDF6E3;
+  --wa-green: #25D366;
+  --wa-teal: #075E54;
+  --wa-bg: #E5DDD5;
+  --wa-bubble-in: #FFFFFF;
+  --wa-bubble-out: #DCF8C6;
+  --cream: #FAFAF5;
+  --text: #1A2E1A;
+  --muted: #6B7B6B;
+  --border: #D4E4D4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+
+/* HERO */
+.hero{
+  background: linear-gradient(160deg, var(--forest) 0%, #0D2419 50%, var(--forest-mid) 100%);
+  padding:52px 24px 44px;
+  position:relative; overflow:hidden;
+}
+.hero-pattern{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background-image: repeating-linear-gradient(45deg, rgba(201,168,76,0.03) 0, rgba(201,168,76,0.03) 1px, transparent 0, transparent 50%);
+  background-size:20px 20px;
+}
+.hero-circle{
+  position:absolute;right:-60px;top:-60px;
+  width:260px;height:260px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.15);
+}
+.hero-circle2{
+  position:absolute;right:-20px;top:-20px;
+  width:160px;height:160px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.1);
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(201,168,76,0.12);
+  border:1px solid rgba(201,168,76,0.25);
+  color:var(--gold-light);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;margin-bottom:18px;
+  font-family:'JetBrains Mono',monospace;
+}
+.wa-icon-small{font-size:12px;}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:38px;font-weight:600;color:white;line-height:1.15;margin-bottom:10px;
+}
+.hero h1 em{color:var(--gold-light);font-style:italic;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.75;margin-bottom:28px;max-width:320px;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.pill{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.7);font-size:11px;padding:5px 12px;border-radius:20px;
+}
+.pill .pi{margin-right:4px;}
+
+/* TABS */
+.tabs{
+  display:flex;background:white;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(26,58,42,0.08);
+  overflow-x:auto;
+}
+.tab{
+  flex:1;min-width:80px;padding:12px 8px;
+  text-align:center;cursor:pointer;
+  font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;
+  color:var(--muted);border-bottom:2px solid transparent;
+  transition:all 0.2s;font-family:'JetBrains Mono',monospace;
+}
+.tab.active{color:var(--forest);border-bottom-color:var(--gold);}
+.tab-icon{font-size:16px;display:block;margin-bottom:3px;}
+
+/* SECTIONS */
+.section{display:none;padding:24px 20px;animation:fadein 0.3s ease;}
+.section.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sec-eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--forest);margin-bottom:6px;}
+.sec-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:22px;}
+
+/* PHONE MOCKUP */
+.phone-wrap{display:flex;justify-content:center;margin-bottom:10px;}
+.phone{
+  width:100%;max-width:340px;
+  background:white;
+  border-radius:32px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(26,58,42,0.2);
+  border:6px solid var(--forest);
+}
+.phone-notch{
+  background:var(--forest);
+  height:28px;
+  display:flex;align-items:center;justify-content:center;
+}
+.notch-bar{width:80px;height:5px;background:rgba(255,255,255,0.2);border-radius:3px;}
+
+/* WA HEADER */
+.wa-header{
+  background:var(--wa-teal);
+  padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.wa-back{color:rgba(255,255,255,0.8);font-size:18px;margin-right:2px;}
+.wa-avatar-wrap{position:relative;}
+.wa-av{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--forest-light);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.wa-online{
+  position:absolute;bottom:1px;right:1px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--wa-green);border:2px solid var(--wa-teal);
+}
+.wa-info{flex:1;}
+.wa-name{color:white;font-size:14px;font-weight:600;}
+.wa-status{color:rgba(255,255,255,0.6);font-size:10px;}
+.wa-more{color:rgba(255,255,255,0.7);font-size:18px;}
+
+/* MESSAGES */
+.wa-messages{
+  background:var(--wa-bg);
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23B2A698' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  padding:14px 10px;
+  min-height:320px;max-height:320px;
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:6px;
+}
+.wm{
+  max-width:78%;padding:8px 10px;border-radius:8px;
+  font-size:12.5px;line-height:1.5;
+  animation:wmpop 0.25s ease;
+}
+@keyframes wmpop{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+.wm.in{
+  background:var(--wa-bubble-in);align-self:flex-start;
+  border-bottom-left-radius:2px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.08);
+  color:var(--text);
+}
+.wm.out{
+  background:var(--wa-bubble-out);align-self:flex-end;
+  border-bottom-right-radius:2px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.08);
+  color:var(--text);
+}
+.wm-meta{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:3px;}
+.wm-time{font-size:10px;color:#92A8A0;}
+.wm-ticks{font-size:11px;color:#53BDEB;}
+.date-divider{
+  text-align:center;margin:8px 0;
+  font-size:10px;color:#92A8A0;
+  background:rgba(255,255,255,0.6);
+  border-radius:8px;padding:3px 10px;
+  align-self:center;
+}
+
+/* OPTIONS */
+.wa-opts{
+  background:white;padding:8px 10px 10px;
+  display:flex;flex-wrap:wrap;gap:6px;
+  border-top:1px solid #f0f0f0;
+}
+.wopt{
+  background:white;border:1.5px solid var(--wa-teal);
+  color:var(--wa-teal);padding:6px 12px;border-radius:20px;
+  font-size:11px;cursor:pointer;transition:all 0.2s;
+  font-family:'Nunito',sans-serif;font-weight:600;
+}
+.wopt:hover{background:var(--wa-teal);color:white;}
+
+/* WA INPUT */
+.wa-input-row{
+  display:flex;align-items:center;gap:6px;padding:8px 10px;
+  background:var(--wa-bg); border-top:1px solid rgba(0,0,0,0.06);
+}
+.wa-input-field{
+  flex:1;background:white;border:none;border-radius:24px;
+  padding:8px 14px;font-size:12px;color:var(--muted);
+  font-family:'Nunito',sans-serif;outline:none;
+}
+.wa-mic,.wa-attach{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--wa-teal);color:white;border:none;
+  font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+
+/* FLOW CARDS */
+.flow-grid{display:flex;flex-direction:column;gap:12px;}
+.fcard{
+  background:white;border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 2px 12px rgba(26,58,42,0.06);
+}
+.fcard-head{
+  background:linear-gradient(135deg,var(--forest),#0D2419);
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+}
+.fcard-icon{font-size:22px;}
+.fcard-title{font-family:'Playfair Display',serif;font-size:18px;color:white;}
+.fcard-sub{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.fcard-body{padding:16px;}
+.ftag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.ftag{
+  font-size:11px;padding:4px 10px;border-radius:20px;
+  background:var(--gold-pale);color:var(--forest);border:1px solid rgba(201,168,76,0.3);
+}
+.fcard-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ANIMATED VISUAL */
+.anim-visual{
+  background:linear-gradient(135deg,var(--forest) 0%,#0D2419 100%);
+  border-radius:16px;padding:24px 16px;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.anim-visual::after{
+  content:'';position:absolute;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,transparent 70%);
+  bottom:-60px;right:-40px;
+}
+.anim-title{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:16px;}
+.anim-steps{display:flex;flex-direction:column;gap:8px;}
+.astep{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px;
+  animation:asin 0.5s ease both;
+}
+.astep:nth-child(1){animation-delay:0.1s}
+.astep:nth-child(2){animation-delay:0.25s}
+.astep:nth-child(3){animation-delay:0.4s}
+.astep:nth-child(4){animation-delay:0.55s}
+@keyframes asin{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.astep-icon{font-size:18px;width:30px;text-align:center;}
+.astep-title{font-size:12px;font-weight:600;color:white;}
+.astep-sub{font-size:10px;color:#64748B;margin-top:1px;}
+.astep-badge{margin-left:auto;font-size:9px;padding:2px 8px;border-radius:20px;font-family:'JetBrains Mono',monospace;}
+.bg{background:rgba(201,168,76,0.15);color:var(--gold);}
+.gg{background:rgba(37,211,102,0.15);color:#25D366;}
+.conn{width:2px;height:10px;background:rgba(201,168,76,0.2);margin:0 auto -2px 29px;}
+
+/* USE CASES */
+.uc-list{display:flex;flex-direction:column;gap:10px;}
+.uc-item{
+  background:white;border-radius:12px;padding:16px;
+  border-left:3px solid var(--gold);
+  display:flex;gap:12px;align-items:flex-start;
+  box-shadow:0 2px 8px rgba(26,58,42,0.05);
+}
+.uc-ico{font-size:22px;margin-top:2px;}
+.uc-title{font-size:13px;font-weight:600;color:var(--forest);margin-bottom:3px;}
+.uc-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* CTA */
+.cta{
+  background:linear-gradient(160deg,var(--forest) 0%,#0D2419 60%,#1A4A30 100%);
+  padding:40px 24px;text-align:center;position:relative;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:300px;height:300px;border-radius:50%;
+  border:1px solid rgba(201,168,76,0.1);pointer-events:none;
+}
+.cta h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:white;margin-bottom:8px;line-height:1.2;}
+.cta h2 em{color:var(--gold-light);}
+.cta p{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;line-height:1.7;}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--wa-green);color:white;
+  padding:14px 28px;border-radius:50px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  box-shadow:0 8px 24px rgba(37,211,102,0.35);
+  transition:all 0.2s;font-family:'Nunito',sans-serif;
+}
+.cta-btn:hover{transform:translateY(-2px);}
+.dev-tag{margin-top:20px;font-size:10px;color:rgba(255,255,255,0.25);font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle2"></div>
+  <div class="hero-tag"><span class="wa-icon-small">💬</span> Live Demo · WhatsApp AI Agent</div>
+  <h1>Your Business on<br>WhatsApp, <em>Automated.</em></h1>
+  <p class="hero-sub">An intelligent AI agent on WhatsApp that handles customer conversations, bookings, and follow-ups — while you focus on growing.</p>
+  <p class="hero-sub">Prepared by Dev Jariwala · Fixera Automation · Surat</p>
+  <div class="hero-pills">
+    <div class="pill"><span class="pi">✓</span> No App Download</div>
+    <div class="pill"><span class="pi">✓</span> Works 24/7</div>
+    <div class="pill"><span class="pi">✓</span> Feels Human</div>
+    <div class="pill"><span class="pi">✓</span> Any Industry</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('demo',this)"><span class="tab-icon">📱</span>Demo</div>
+  <div class="tab" onclick="showTab('flows',this)"><span class="tab-icon">🔄</span>Flows</div>
+  <div class="tab" onclick="showTab('system',this)"><span class="tab-icon">⚙️</span>System</div>
+  <div class="tab" onclick="showTab('usecases',this)"><span class="tab-icon">🏢</span>Use Cases</div>
+</div>
+
+<!-- DEMO -->
+<div id="tab-demo" class="section active">
+  <div class="sec-eyebrow">// Interactive Demo</div>
+  <div class="sec-title">See It in Action</div>
+  <div class="sec-desc">Experience a real WhatsApp AI conversation. Tap any option to explore the flow.</div>
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-notch"><div class="notch-bar"></div></div>
+      <div class="wa-header">
+        <span class="wa-back">←</span>
+        <div class="wa-avatar-wrap">
+          <div class="wa-av">🌿</div>
+          <div class="wa-online"></div>
+        </div>
+        <div class="wa-info">
+          <div class="wa-name">Your Business</div>
+          <div class="wa-status">AI Agent · Online</div>
+        </div>
+        <span class="wa-more">⋮</span>
+      </div>
+      <div class="wa-messages" id="waMessages">
+        <div class="date-divider">TODAY</div>
+      </div>
+      <div class="wa-opts" id="waOpts"></div>
+      <div class="wa-input-row">
+        <span class="wa-attach">📎</span>
+        <input class="wa-input-field" placeholder="Message" readonly>
+        <button class="wa-mic">🎤</button>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;">TAP ANY OPTION TO CONTINUE THE CONVERSATION</div>
+</div>
+
+<!-- FLOWS -->
+<div id="tab-flows" class="section">
+  <div class="sec-eyebrow">// Automation Flows</div>
+  <div class="sec-title">What It Can Do</div>
+  <div class="sec-desc">Four intelligent flows that run on autopilot for your business.</div>
+  <div class="flow-grid">
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-icon">🤝</span><div><div class="fcard-title">Welcome & Qualify</div><div class="fcard-sub">First message → understand the customer</div></div></div>
+      <div class="fcard-body"><div class="ftag-row"><span class="ftag">Greet visitor</span><span class="ftag">Ask intent</span><span class="ftag">Qualify lead</span></div><div class="fcard-desc">Every new contact gets a warm, personalised welcome. The AI identifies what they need and routes them to the right flow automatically.</div></div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-icon">📅</span><div><div class="fcard-title">Appointment Booking</div><div class="fcard-sub">Collect details → confirm booking → remind</div></div></div>
+      <div class="fcard-body"><div class="ftag-row"><span class="ftag">Date & time</span><span class="ftag">Auto confirm</span><span class="ftag">24hr reminder</span></div><div class="fcard-desc">Collects name, preferred time, and service — confirms the booking and sends automated reminders before the appointment.</div></div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-icon">❓</span><div><div class="fcard-title">Customer Support</div><div class="fcard-sub">Instant answers to common queries</div></div></div>
+      <div class="fcard-body"><div class="ftag-row"><span class="ftag">FAQ handling</span><span class="ftag">Order status</span><span class="ftag">Escalation</span></div><div class="fcard-desc">Answers the top 80% of customer questions instantly. Complex issues are escalated to a human with full context already shared.</div></div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-icon">🔔</span><div><div class="fcard-title">Follow-up & Re-engage</div><div class="fcard-sub">Automated nudges that bring customers back</div></div></div>
+      <div class="fcard-body"><div class="ftag-row"><span class="ftag">Abandoned cart</span><span class="ftag">Repeat order</span><span class="ftag">Review request</span></div><div class="fcard-desc">Scheduled messages that follow up with customers at the right time — abandoned carts, repeat purchase nudges, review collection.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SYSTEM -->
+<div id="tab-system" class="section">
+  <div class="sec-eyebrow">// How It's Built</div>
+  <div class="sec-title">The System Behind It</div>
+  <div class="sec-desc">An intelligent pipeline that processes every message in under a second.</div>
+  <div class="anim-visual">
+    <div class="anim-title">// MESSAGE PROCESSING PIPELINE</div>
+    <div class="anim-steps">
+      <div class="astep"><span class="astep-icon">📲</span><div><div class="astep-title">Customer sends WhatsApp message</div><div class="astep-sub">Text, voice note, or option tap</div></div><span class="astep-badge bg">TRIGGER</span></div>
+      <div class="conn"></div>
+      <div class="astep"><span class="astep-icon">🧠</span><div><div class="astep-title">AI classifies intent & context</div><div class="astep-sub">Booking? Query? Follow-up? Order?</div></div><span class="astep-badge bg">CLASSIFY</span></div>
+      <div class="conn"></div>
+      <div class="astep"><span class="astep-icon">⚡</span><div><div class="astep-title">Executes the right flow</div><div class="astep-sub">Personalised to the customer & their history</div></div><span class="astep-badge bg">EXECUTE</span></div>
+      <div class="conn"></div>
+      <div class="astep"><span class="astep-icon">✅</span><div><div class="astep-title">Action completed & logged</div><div class="astep-sub">Booking confirmed / lead captured / query resolved</div></div><span class="astep-badge gg">DONE</span></div>
+    </div>
+  </div>
+  <div style="background:white;border-radius:14px;padding:18px;border:1px solid var(--border);">
+    <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:10px;">Setup Requirements from You</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+      ✓ &nbsp;A WhatsApp Business number (new or existing)<br>
+      ✓ &nbsp;Facebook Business Manager account<br>
+      ✓ &nbsp;Your business info, services & FAQs<br>
+      ✓ &nbsp;Business registration document (for API approval)<br><br>
+      <span style="color:var(--forest);font-weight:600;">Everything else — we handle.</span> Setup to live in 7–10 days.
+    </div>
+  </div>
+</div>
+
+<!-- USE CASES -->
+<div id="tab-usecases" class="section">
+  <div class="sec-eyebrow">// Industry Applications</div>
+  <div class="sec-title">Built for Your Industry</div>
+  <div class="sec-desc">The AI agent adapts its language, flows, and logic to your specific business.</div>
+  <div class="uc-list">
+    <div class="uc-item"><span class="uc-ico">🛍️</span><div><div class="uc-title">D2C & E-commerce</div><div class="uc-desc">Product recommendations, order tracking, repeat purchase nudges, abandoned cart recovery</div></div></div>
+    <div class="uc-item"><span class="uc-ico">🏥</span><div><div class="uc-title">Clinics & Wellness</div><div class="uc-desc">Appointment booking, pre-consultation forms, test result alerts, follow-up reminders</div></div></div>
+    <div class="uc-item"><span class="uc-ico">🍽️</span><div><div class="uc-title">Restaurants & Cafes</div><div class="uc-desc">Table reservations, menu queries, special offers, feedback collection after dining</div></div></div>
+    <div class="uc-item"><span class="uc-ico">🏘️</span><div><div class="uc-title">Real Estate</div><div class="uc-desc">Property enquiries, site visit scheduling, EMI calculations, document collection</div></div></div>
+    <div class="uc-item"><span class="uc-ico">🎓</span><div><div class="uc-title">Education & Coaching</div><div class="uc-desc">Course enquiries, demo class booking, fee structure, admission follow-ups</div></div></div>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>Automate your<br>WhatsApp with <em>AI</em></h2>
+  <p>Works on any industry. Live in 7–10 days.<br>Your customers are already on WhatsApp.</p>
+  <a href="https://wa.me/9824155101" class="cta-btn">💬 Chat with Dev on WhatsApp</a>
+  <div class="dev-tag">DEV JARIWALA · AI AUTOMATION AGENCY · SURAT</div>
+</div>
+
+<script>
+function showTab(name,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+const flows=[
+  {
+    msgs:[{t:'in',m:"👋 Hello! Welcome.\n\nI'm your AI assistant. How can I help you today?"}],
+    opts:["Book an appointment","Ask about services","Track my order","Need support"]
+  },
+  {
+    msgs:[
+      {t:'in',m:"👋 Hello! I'm your AI assistant. How can I help?"},
+      {t:'out',m:"Book an appointment"},
+      {t:'in',m:"Great! I'd love to help you book. 📅\n\nWhat service are you looking for?"}
+    ],
+    opts:["Consultation","Product demo","Site visit","General meeting"]
+  },
+  {
+    msgs:[
+      {t:'in',m:"Great! I'd love to help you book. 📅\n\nWhat service are you looking for?"},
+      {t:'out',m:"Consultation"},
+      {t:'in',m:"Perfect. When would you like to come in?\n\nPlease pick a day that works for you:"}
+    ],
+    opts:["Tomorrow","This weekend","Early next week","Send me available slots"]
+  },
+  {
+    msgs:[
+      {t:'in',m:"When would you like to come in?"},
+      {t:'out',m:"This weekend"},
+      {t:'in',m:"We have slots available on:\n\n🟢 Saturday 10am – 12pm\n🟢 Saturday 3pm – 5pm\n🟢 Sunday 11am – 1pm\n\nWhich works best?"}
+    ],
+    opts:["Saturday 10am","Saturday 3pm","Sunday 11am"]
+  },
+  {
+    msgs:[
+      {t:'in',m:"Great slots available this weekend!"},
+      {t:'out',m:"Saturday 10am"},
+      {t:'in',m:"Almost done! What's your name?"}
+    ],
+    opts:["Rahul Sharma →"]
+  },
+  {
+    msgs:[
+      {t:'out',m:"Rahul Sharma"},
+      {t:'in',m:"✅ Booking Confirmed, Rahul!\n\n📅 Saturday, 10:00 AM\n📍 Location will be shared shortly\n\nYou'll receive a reminder 24 hours before.\n\nIs there anything else I can help with?"}
+    ],
+    opts:["No thanks, see you then! 👋","Ask something else"]
+  }
+];
+
+let cur=0;
+function render(idx){
+  const msgs=document.getElementById('waMessages');
+  const opts=document.getElementById('waOpts');
+  opts.innerHTML='';
+  const existing=[...msgs.querySelectorAll('.wm,.date-divider')];
+  const f=flows[idx];
+  const newMsgs = idx===0 ? f.msgs : f.msgs.slice(-3);
+  newMsgs.forEach((m,i)=>{
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.className='wm '+(m.t==='in'?'in':'out');
+      d.innerHTML=m.m.replace(/\n/g,'<br>');
+      const meta=document.createElement('div');
+      meta.className='wm-meta';
+      meta.innerHTML=`<span class="wm-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${m.t==='out'?'<span class="wm-ticks">✓✓</span>':''}`;
+      d.appendChild(meta);
+      msgs.appendChild(d);
+      msgs.scrollTop=msgs.scrollHeight;
+    },i*200);
+  });
+  setTimeout(()=>{
+    f.opts.forEach(o=>{
+      const b=document.createElement('button');
+      b.className='wopt';b.textContent=o;
+      b.onclick=()=>{if(cur<flows.length-1){cur++;render(cur);}};
+      opts.appendChild(b);
+    });
+  },newMsgs.length*200+100);
+}
+render(0);
+</script>
+</body>
+</html>
